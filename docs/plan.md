@@ -10,8 +10,8 @@ Decisiones tomadas (22 nov 2026):
 
 | Fase | Estado |
 |---|---|
-| 0. Marca y página de venta | En revisión (este PR) |
-| 1. Base y acceso | Pendiente |
+| 0. Marca y página de venta | Aprobada |
+| 1. Base y acceso | En revisión |
 | 2. Modelo de datos y RLS | Pendiente |
 | 3. Flujo principal | Pendiente |
 | 4. Cobro manual | Pendiente |
@@ -29,7 +29,21 @@ Decisiones tomadas (22 nov 2026):
 - [x] Analítica de visitas y conversiones.
 - [x] Privacidad y términos (borrador, requiere revisión legal).
 - [x] CI: lint, typecheck, tests, build.
-- [ ] Conectar Supabase y Resend reales y probar un lead de punta a punta (falta tu cuenta).
+- [x] Lead de punta a punta contra Supabase local: guardado, límite por IP (429 al sexto) y lectura pública denegada por la API. Falta repetirlo con tus cuentas reales de Supabase y Resend.
 - [ ] Dominio y despliegue.
 
 Fecha por confirmar: el plazo de renovación de alojamiento del 2 de diciembre no aparece en ninguna fuente pública encontrada; la página lo marca "por confirmar con el Departamento".
+
+## Fase 1: criterios de aceptación
+
+- [x] Registro con correo y contraseña, acceso con contraseña o enlace mágico, recuperación de contraseña, confirmación de correo.
+- [x] Crear organización (el creador queda como propietario); cambiar entre organizaciones.
+- [x] Invitar por correo con rol; enlace de un solo uso, guardado como hash, vence en 7 días; solo lo acepta el correo invitado.
+- [x] Roles propietario / administrador / operador / solo lectura aplicados en la base de datos (RLS y funciones), no solo en pantalla.
+- [x] Auditoría de acciones sensibles, visible para propietarios y administradores.
+- [x] Interfaz en español e inglés.
+- [x] Pruebas: 15 unitarias, RLS por rol (Postgres 16 y Supabase real), 3 E2E con Playwright (registro → organización → invitación → permisos), linter de Supabase sin errores.
+- [x] CI: lint, tipos, unitarias, build, pruebas de base de datos y E2E con Supabase local.
+- [x] Monitoreo: `/api/health` y errores del servidor en JSON.
+- [ ] Proyectos de Supabase de staging y producción (faltan tus cuentas).
+- [ ] Sentry u otro servicio de alertas (falta cuenta; el punto de conexión ya existe).
