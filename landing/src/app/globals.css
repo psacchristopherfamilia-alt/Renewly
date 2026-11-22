@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+/* Brand tokens. Dark mode follows the system unless a data-theme attribute forces it. */
+:root {
+  --bg: #f4f7fc;
+  --surface: #ffffff;
+  --fg: #0f172a;
+  --muted: #55637d;
+  --line: #d8e0ee;
+  --brand: #1d4ed8;
+  --brand-fg: #ffffff;
+  --brand-soft: #dde7fd;
+  --brand-light: #93c5fd;
+  --ink: #0f172a;
+  --warn: #9a5500;
+  --warn-soft: #fde9c8;
+  --bad: #b3261e;
+  --bad-soft: #fbe0dd;
+  --ok: #17703a;
+  --ok-soft: #d6efdd;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b1222;
+    --surface: #131d33;
+    --fg: #e8eefc;
+    --muted: #9aa8c4;
+    --line: #26365a;
+    --brand: #8fb0ff;
+    --brand-fg: #0b1222;
+    --brand-soft: #1b2c57;
+    --warn: #f1bd6c;
+    --warn-soft: #42300e;
+    --bad: #f2928b;
+    --bad-soft: #4a1d19;
+    --ok: #7bd695;
+    --ok-soft: #173a22;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b1222; --surface: #131d33; --fg: #e8eefc; --muted: #9aa8c4; --line: #26365a;
+  --brand: #8fb0ff; --brand-fg: #0b1222; --brand-soft: #1b2c57;
+  --warn: #f1bd6c; --warn-soft: #42300e; --bad: #f2928b; --bad-soft: #4a1d19; --ok: #7bd695; --ok-soft: #173a22;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-brand: var(--brand);
+  --color-brand-fg: var(--brand-fg);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-light: var(--brand-light);
+  --color-ink: var(--ink);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-bad: var(--bad);
+  --color-bad-soft: var(--bad-soft);
+  --color-ok: var(--ok);
+  --color-ok-soft: var(--ok-soft);
+  --font-sans: var(--font-dm-sans), system-ui, sans-serif;
+  --font-display: var(--font-fraunces), Georgia, serif;
+}
+
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+body { background: var(--bg); color: var(--fg); }
+:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
