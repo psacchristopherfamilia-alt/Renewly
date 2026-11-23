@@ -23,6 +23,8 @@ test("owner creates an organisation, invites an operator who joins with limited 
   await a.getByLabel("Nombre de la organización").fill(`Island Villas ${run}`);
   await a.getByRole("button", { name: "Crear organización" }).click();
   await expect(a).toHaveURL(/\/dashboard/);
+  await a.getByRole("dialog").getByRole("button", { name: "Saltar" }).click();
+  await expect(a.getByRole("dialog")).toHaveCount(0);
   await expect(a.getByText(`Island Villas ${run}`, { exact: true })).toBeVisible();
   await expect(a.getByText("Tu rol: Propietario")).toBeVisible();
 
@@ -55,6 +57,8 @@ test("owner creates an organisation, invites an operator who joins with limited 
   await expect(b.getByText(`Te invitaron a Island Villas ${run}`)).toBeVisible();
   await b.getByRole("button", { name: "Aceptar invitación" }).click();
   await expect(b).toHaveURL(/\/dashboard/);
+  await b.getByRole("dialog").getByRole("button", { name: "Saltar" }).click();
+  await expect(b.getByRole("dialog")).toHaveCount(0);
   await expect(b.getByText("Tu rol: Operador")).toBeVisible();
 
   // 5. The operator sees the team but cannot invite or manage it, nor read the activity log.

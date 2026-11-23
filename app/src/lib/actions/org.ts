@@ -19,6 +19,8 @@ export async function createOrganization(fd: FormData) {
   const { supabase } = await requireUser();
   const { data, error } = await supabase.rpc("create_organization", { p_name: String(fd.get("name") ?? "") });
   if (error || !data) fail("/onboarding", error?.message);
+  // Preloaded example so the dashboard is not empty on day one; one click removes it.
+  await supabase.rpc("load_sample_data", { p_tenant: data as string });
   (await cookies()).set(ORG_COOKIE, data as string, COOKIE);
   redirect("/dashboard");
 }

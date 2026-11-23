@@ -516,6 +516,7 @@ export type Database = {
           full_name: string
           id: string
           locale: string
+          tour_done_at: string | null
         }
         Insert: {
           created_at?: string
@@ -523,6 +524,7 @@ export type Database = {
           full_name?: string
           id: string
           locale?: string
+          tour_done_at?: string | null
         }
         Update: {
           created_at?: string
@@ -530,6 +532,7 @@ export type Database = {
           full_name?: string
           id?: string
           locale?: string
+          tour_done_at?: string | null
         }
         Relationships: []
       }
@@ -585,6 +588,58 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "properties_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reminder_log: {
+        Row: {
+          deadline: string
+          id: number
+          kind: string
+          license_id: string
+          recipients: number
+          sent_at: string
+          tenant_id: string
+        }
+        Insert: {
+          deadline: string
+          id?: never
+          kind: string
+          license_id: string
+          recipients?: number
+          sent_at?: string
+          tenant_id: string
+        }
+        Update: {
+          deadline?: string
+          id?: never
+          kind?: string
+          license_id?: string
+          recipients?: number
+          sent_at?: string
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reminder_log_license_id_fkey"
+            columns: ["license_id"]
+            isOneToOne: false
+            referencedRelation: "license_overview"
+            referencedColumns: ["license_id"]
+          },
+          {
+            foreignKeyName: "reminder_log_license_id_fkey"
+            columns: ["license_id"]
+            isOneToOne: false
+            referencedRelation: "licenses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reminder_log_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "organizations"
@@ -656,13 +711,35 @@ export type Database = {
         }
         Returns: undefined
       }
+      clear_sample_data: { Args: { p_tenant: string }; Returns: number }
       create_organization: { Args: { p_name: string }; Returns: string }
+      due_reminders: {
+        Args: { p_today?: string }
+        Returns: {
+          days_left: number
+          deadline: string
+          expires_on: string
+          kind: string
+          license_id: string
+          license_type: string
+          organization: string
+          property_name: string
+          recipients: Json
+          required_done: number
+          required_items: number
+          tenant_id: string
+        }[]
+      }
       has_role: {
         Args: {
           p_min: Database["public"]["Enums"]["member_role"]
           p_tenant: string
         }
         Returns: boolean
+      }
+      import_properties: {
+        Args: { p_rows: Json; p_tenant: string }
+        Returns: number
       }
       invitation_preview: {
         Args: { p_token: string }
@@ -682,6 +759,16 @@ export type Database = {
         Returns: string
       }
       is_member: { Args: { p_tenant: string }; Returns: boolean }
+      load_sample_data: { Args: { p_tenant: string }; Returns: number }
+      mark_reminder_sent: {
+        Args: {
+          p_deadline: string
+          p_kind: string
+          p_license: string
+          p_recipients: number
+        }
+        Returns: undefined
+      }
       my_organizations: {
         Args: never
         Returns: {
@@ -694,6 +781,11 @@ export type Database = {
         Args: { p_tenant: string }
         Returns: Database["public"]["Enums"]["member_role"]
       }
+      next_expiry: {
+        Args: { p_from?: string; p_type: string }
+        Returns: string
+      }
+      reminder_kind: { Args: { p_days: number }; Returns: string }
       remove_member: {
         Args: { p_tenant: string; p_user: string }
         Returns: undefined

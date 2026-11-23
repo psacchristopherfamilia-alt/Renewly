@@ -1,6 +1,6 @@
 // Route rules shared by the middleware and the server actions. Pure functions, unit tested.
 
-const PUBLIC = ["/login", "/signup", "/forgot", "/reset", "/auth", "/lang", "/invite", "/api/health"];
+const PUBLIC = ["/login", "/signup", "/forgot", "/reset", "/auth", "/lang", "/invite", "/api/health", "/api/cron"];
 
 export function isPublicPath(path: string): boolean {
   return path === "/" || PUBLIC.some((p) => path === p || path.startsWith(`${p}/`));

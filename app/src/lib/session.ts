@@ -35,7 +35,7 @@ export const requireUser = cache(async () => {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
-  const { data: profile } = await supabase.from("profiles").select("full_name, email, locale").eq("id", user.id).single();
+  const { data: profile } = await supabase.from("profiles").select("full_name, email, locale, tour_done_at").eq("id", user.id).single();
   return { supabase, user, profile };
 });
 

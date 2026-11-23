@@ -2,10 +2,12 @@ import Link from "next/link";
 import { signOut } from "@/app/(auth)/actions";
 import { Logo } from "@/components/ui";
 import { switchOrganization } from "@/lib/actions/org";
+import { finishTour } from "@/lib/actions/portfolio";
+import { Tour } from "@/components/Tour";
 import { getT, requireOrg } from "@/lib/session";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
-  const { org, orgs } = await requireOrg();
+  const { org, orgs, profile } = await requireOrg();
   const t = await getT();
   const other = t.common.lang === "English" ? "en" : "es";
   return (
@@ -31,12 +33,13 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           </div>
         </div>
         <nav className="mx-auto flex max-w-5xl gap-1 overflow-x-auto px-4 text-sm">
-          {[["/dashboard", t.nav.dashboard], ["/team", t.nav.team], ["/settings", t.nav.settings]].map(([href, text]) => (
+          {[["/dashboard", t.nav.dashboard], ["/properties", t.portfolio.navProperties], ...(org.role === "owner" || org.role === "admin" ? [["/import", t.portfolio.navImport]] : []), ["/team", t.nav.team], ["/settings", t.nav.settings], ["/help", t.portfolio.navHelp]].map(([href, text]) => (
             <Link key={href} href={href} className="whitespace-nowrap border-b-2 border-transparent px-3 py-2 text-muted hover:border-brand hover:text-fg">{text}</Link>
           ))}
         </nav>
       </header>
       <main className="mx-auto max-w-5xl px-4 py-8">{children}</main>
+      {!profile?.tour_done_at && <Tour steps={t.tour.steps} labels={t.tour} onFinish={finishTour} />}
     </div>
   );
 }

@@ -12,8 +12,8 @@ Decisiones tomadas (22 nov 2026):
 |---|---|
 | 0. Marca y página de venta | Aprobada |
 | 1. Base y acceso | Aprobada |
-| 2. Modelo de datos y RLS | En revisión |
-| 3. Flujo principal | Pendiente |
+| 2. Modelo de datos y RLS | Aprobada |
+| 3. Flujo principal | En revisión |
 | 4. Cobro manual | Pendiente |
 | 5. Renovación en lote asistida | Pendiente: faltan formularios oficiales |
 | 6. Pulido y lanzamiento | Pendiente |
@@ -60,5 +60,20 @@ Fecha por confirmar: el plazo de renovación de alojamiento del 2 de diciembre n
 - [x] Almacenamiento privado `documents` (15 MB, PDF e imágenes), carpeta por organización, enlaces firmados; sin URL pública.
 - [x] Auditoría automática de altas, cambios (con los campos cambiados) y bajas.
 - [x] Pruebas: RLS por rol en Postgres 16 y Supabase real (con 2 fallas inyectadas a propósito que las pruebas detectan), 12 pruebas de almacenamiento por API, linter de Supabase sin errores; CI ampliado.
-- [ ] Aplicar `supabase/setup/phase2.sql` en el proyecto real.
+- [x] `phase2.sql` aplicado en el proyecto real.
 - [ ] Confirmar con Tourism Regulations e IRD la fecha del 2 de diciembre y los requisitos de cada checklist.
+
+## Fase 3: criterios de aceptación
+
+- [x] Panel de vencimientos: indicadores, filtros por estado, tabla ordenada por fecha límite de solicitud, progreso del checklist. Urgente: 7 días o menos, vencida, o 14 días con requisitos pendientes.
+- [x] Propiedades: alta, edición y eliminación (borra también los archivos); licencias con fecha oficial automática si no se indica.
+- [x] Checklist por propiedad: marcar (registra quién), notas, documentos ligados a cada requisito; apertura con enlace firmado de 2 minutos.
+- [x] Importación CSV: columnas en español o inglés, vista previa y errores por fila antes de importar; todo o nada en la base de datos.
+- [x] Ejemplo precargado del prototipo al crear la organización; se borra con un clic sin tocar lo importado.
+- [x] Tour inicial de 4 pasos, guardado por usuario; se puede repetir desde Ayuda.
+- [x] Página de ayuda con pasos, roles y preguntas frecuentes.
+- [x] Recordatorios por correo a propietarios y administradores 30, 14, 7, 3 y 1 día antes, el día y una vez vencida; nunca dos veces ni para el ejemplo. Tarea diaria protegida con `CRON_SECRET`.
+- [x] Pruebas: 30 unitarias, base de datos (Postgres y Supabase), 12 de almacenamiento, 5 E2E (incluye intento de otra organización de abrir una propiedad o documento ajeno).
+- [ ] Aplicar `supabase/setup/phase3.sql` en el proyecto real.
+- [ ] Configurar Resend (`RESEND_API_KEY`, `EMAIL_FROM`), `CRON_SECRET` y `SUPABASE_SERVICE_ROLE_KEY` en el hosting para que salgan los recordatorios.
+- [ ] Recordatorios por WhatsApp: quedan para la fase de cobro y extras (requiere cuenta de Twilio o Meta).
