@@ -17,7 +17,7 @@ export function daysBetween(fromIso: string, toIso: string): number {
   return Math.round((b - a) / 86_400_000);
 }
 
-export function deadlineOf(r: OverviewRow): string {
+export function deadlineOf(r: Pick<OverviewRow, "expires_on" | "filing_deadline">): string {
   return r.filing_deadline ?? r.expires_on;
 }
 

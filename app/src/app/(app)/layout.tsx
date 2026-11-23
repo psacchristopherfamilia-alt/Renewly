@@ -48,7 +48,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           </div>
         </div>
         <nav className="mx-auto flex max-w-5xl gap-1 overflow-x-auto px-4 text-sm">
-          {[["/dashboard", t.nav.dashboard], ["/properties", t.portfolio.navProperties], ...(isAdmin ? [["/import", t.portfolio.navImport]] : []), ["/team", t.nav.team], ...(isAdmin ? [["/billing", t.billing.nav]] : []), ["/settings", t.nav.settings], ["/help", t.portfolio.navHelp], ...(platformAdmin ? [["/platform", t.billing.navPlatform]] : [])].map(([href, text]) => (
+          {[["/dashboard", t.nav.dashboard], ["/properties", t.portfolio.navProperties], ["/renewals", t.renewals.nav], ...(isAdmin ? [["/import", t.portfolio.navImport]] : []), ["/team", t.nav.team], ...(isAdmin ? [["/billing", t.billing.nav]] : []), ["/settings", t.nav.settings], ["/help", t.portfolio.navHelp], ...(platformAdmin ? [["/platform", t.billing.navPlatform]] : [])].map(([href, text]) => (
             <Link key={href} href={href} className="whitespace-nowrap border-b-2 border-transparent px-3 py-2 text-muted hover:border-brand hover:text-fg">{text}</Link>
           ))}
         </nav>

@@ -59,6 +59,7 @@ export function errorKey(message: string | undefined): keyof Dictionary["errors"
     "invalid_name", "invalid_email", "already_member", "forbidden", "last_owner", "invalid_invitation",
     "invitation_email_mismatch", "too_many_invitations", "too_many_organizations",
     "plan_limit", "subscription_suspended", "quantity_below_usage", "invoice_closed", "invalid_plan",
+    "requirements_missing", "reference_required", "receipt_required", "renewal_locked", "new_expiry_required", "evidence_required", "reason_required",
   ] as const;
   return codes.find((c) => message?.includes(c)) ?? "generic";
 }

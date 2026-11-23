@@ -556,8 +556,11 @@ export type Database = {
           name_en: string
           name_es: string
           notes: string
+          portal_name: string
+          portal_url: string | null
           rules_confirmed: boolean
           source_url: string | null
+          templates_confirmed: boolean
         }
         Insert: {
           authority: string
@@ -569,8 +572,11 @@ export type Database = {
           name_en: string
           name_es: string
           notes?: string
+          portal_name?: string
+          portal_url?: string | null
           rules_confirmed?: boolean
           source_url?: string | null
+          templates_confirmed?: boolean
         }
         Update: {
           authority?: string
@@ -582,8 +588,11 @@ export type Database = {
           name_en?: string
           name_es?: string
           notes?: string
+          portal_name?: string
+          portal_url?: string | null
           rules_confirmed?: boolean
           source_url?: string | null
+          templates_confirmed?: boolean
         }
         Relationships: []
       }
@@ -943,6 +952,259 @@ export type Database = {
           },
         ]
       }
+      renewal_events: {
+        Row: {
+          actor_id: string | null
+          created_at: string
+          data: Json
+          id: number
+          kind: string
+          note: string | null
+          renewal_id: string
+          tenant_id: string
+        }
+        Insert: {
+          actor_id?: string | null
+          created_at?: string
+          data?: Json
+          id?: never
+          kind: string
+          note?: string | null
+          renewal_id: string
+          tenant_id: string
+        }
+        Update: {
+          actor_id?: string | null
+          created_at?: string
+          data?: Json
+          id?: never
+          kind?: string
+          note?: string | null
+          renewal_id?: string
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "renewal_events_renewal_id_tenant_id_fkey"
+            columns: ["renewal_id", "tenant_id"]
+            isOneToOne: false
+            referencedRelation: "renewals"
+            referencedColumns: ["id", "tenant_id"]
+          },
+        ]
+      }
+      renewal_questions: {
+        Row: {
+          code: string
+          label_en: string
+          label_es: string
+          license_type: string
+          sort: number
+        }
+        Insert: {
+          code: string
+          label_en: string
+          label_es: string
+          license_type: string
+          sort?: number
+        }
+        Update: {
+          code?: string
+          label_en?: string
+          label_es?: string
+          license_type?: string
+          sort?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "renewal_questions_license_type_fkey"
+            columns: ["license_type"]
+            isOneToOne: false
+            referencedRelation: "license_types"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
+      renewal_requirements: {
+        Row: {
+          code: string
+          created_at: string
+          doc_kind: string
+          document_id: string | null
+          id: string
+          label: string
+          renewal_id: string
+          required: boolean
+          sort: number
+          source: string
+          tenant_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          doc_kind?: string
+          document_id?: string | null
+          id?: string
+          label: string
+          renewal_id: string
+          required?: boolean
+          sort?: number
+          source?: string
+          tenant_id: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          doc_kind?: string
+          document_id?: string | null
+          id?: string
+          label?: string
+          renewal_id?: string
+          required?: boolean
+          sort?: number
+          source?: string
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "renewal_requirements_document_id_tenant_id_fkey"
+            columns: ["document_id", "tenant_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id", "tenant_id"]
+          },
+          {
+            foreignKeyName: "renewal_requirements_renewal_id_tenant_id_fkey"
+            columns: ["renewal_id", "tenant_id"]
+            isOneToOne: false
+            referencedRelation: "renewals"
+            referencedColumns: ["id", "tenant_id"]
+          },
+        ]
+      }
+      renewals: {
+        Row: {
+          answers: Json
+          created_at: string
+          created_by: string | null
+          cycle_expires_on: string
+          decided_at: string | null
+          decision_note: string | null
+          form_data: Json
+          id: string
+          license_id: string
+          new_license_id: string | null
+          portal_reference: string | null
+          receipt_document_id: string | null
+          status: Database["public"]["Enums"]["renewal_status"]
+          submitted_at: string | null
+          submitted_by: string | null
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          answers?: Json
+          created_at?: string
+          created_by?: string | null
+          cycle_expires_on: string
+          decided_at?: string | null
+          decision_note?: string | null
+          form_data?: Json
+          id?: string
+          license_id: string
+          new_license_id?: string | null
+          portal_reference?: string | null
+          receipt_document_id?: string | null
+          status?: Database["public"]["Enums"]["renewal_status"]
+          submitted_at?: string | null
+          submitted_by?: string | null
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          answers?: Json
+          created_at?: string
+          created_by?: string | null
+          cycle_expires_on?: string
+          decided_at?: string | null
+          decision_note?: string | null
+          form_data?: Json
+          id?: string
+          license_id?: string
+          new_license_id?: string | null
+          portal_reference?: string | null
+          receipt_document_id?: string | null
+          status?: Database["public"]["Enums"]["renewal_status"]
+          submitted_at?: string | null
+          submitted_by?: string | null
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "renewals_license_id_tenant_id_fkey"
+            columns: ["license_id", "tenant_id"]
+            isOneToOne: false
+            referencedRelation: "license_overview"
+            referencedColumns: ["license_id", "tenant_id"]
+          },
+          {
+            foreignKeyName: "renewals_license_id_tenant_id_fkey"
+            columns: ["license_id", "tenant_id"]
+            isOneToOne: false
+            referencedRelation: "licenses"
+            referencedColumns: ["id", "tenant_id"]
+          },
+          {
+            foreignKeyName: "renewals_receipt_document_id_tenant_id_fkey"
+            columns: ["receipt_document_id", "tenant_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id", "tenant_id"]
+          },
+        ]
+      }
+      requirement_templates: {
+        Row: {
+          code: string
+          condition: string | null
+          doc_kind: string
+          label_en: string
+          label_es: string
+          license_type: string
+          required: boolean
+          sort: number
+        }
+        Insert: {
+          code: string
+          condition?: string | null
+          doc_kind?: string
+          label_en: string
+          label_es: string
+          license_type: string
+          required?: boolean
+          sort?: number
+        }
+        Update: {
+          code?: string
+          condition?: string | null
+          doc_kind?: string
+          label_en?: string
+          label_es?: string
+          license_type?: string
+          required?: boolean
+          sort?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "requirement_templates_license_type_fkey"
+            columns: ["license_type"]
+            isOneToOne: false
+            referencedRelation: "license_types"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
       subscriptions: {
         Row: {
           cancel_at: string | null
@@ -1056,6 +1318,39 @@ export type Database = {
           },
         ]
       }
+      renewal_requirement_status: {
+        Row: {
+          code: string | null
+          doc_kind: string | null
+          document_expires_on: string | null
+          document_id: string | null
+          file_name: string | null
+          id: string | null
+          label: string | null
+          renewal_id: string | null
+          required: boolean | null
+          sort: number | null
+          source: string | null
+          status: string | null
+          tenant_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "renewal_requirements_document_id_tenant_id_fkey"
+            columns: ["document_id", "tenant_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id", "tenant_id"]
+          },
+          {
+            foreignKeyName: "renewal_requirements_renewal_id_tenant_id_fkey"
+            columns: ["renewal_id", "tenant_id"]
+            isOneToOne: false
+            referencedRelation: "renewals"
+            referencedColumns: ["id", "tenant_id"]
+          },
+        ]
+      }
     }
     Functions: {
       _audit: {
@@ -1093,9 +1388,54 @@ export type Database = {
       }
       _owner_count: { Args: { p_tenant: string }; Returns: number }
       _path_tenant: { Args: { p_name: string }; Returns: string }
+      _renewal_event: {
+        Args: {
+          p_data?: Json
+          p_kind: string
+          p_note?: string
+          p_renewal: Database["public"]["Tables"]["renewals"]["Row"]
+        }
+        Returns: undefined
+      }
+      _renewal_for_write: {
+        Args: {
+          p_min: Database["public"]["Enums"]["member_role"]
+          p_renewal: string
+        }
+        Returns: {
+          answers: Json
+          created_at: string
+          created_by: string | null
+          cycle_expires_on: string
+          decided_at: string | null
+          decision_note: string | null
+          form_data: Json
+          id: string
+          license_id: string
+          new_license_id: string | null
+          portal_reference: string | null
+          receipt_document_id: string | null
+          status: Database["public"]["Enums"]["renewal_status"]
+          submitted_at: string | null
+          submitted_by: string | null
+          tenant_id: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "renewals"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       _require_platform_admin: { Args: never; Returns: undefined }
       _require_user: { Args: never; Returns: string }
+      _sync_requirements: { Args: { p_renewal: string }; Returns: undefined }
       accept_invitation: { Args: { p_token: string }; Returns: string }
+      attach_requirement_document: {
+        Args: { p_document: string; p_requirement: string }
+        Returns: undefined
+      }
       billing_tick: { Args: { p_today?: string }; Returns: number }
       cancel_subscription: {
         Args: { p_cancel?: boolean; p_tenant: string }
@@ -1170,6 +1510,14 @@ export type Database = {
           p_kind: string
           p_license: string
           p_recipients: number
+        }
+        Returns: undefined
+      }
+      mark_renewal_submitted: {
+        Args: {
+          p_portal_reference: string
+          p_receipt_document: string
+          p_renewal: string
         }
         Returns: undefined
       }
@@ -1255,6 +1603,18 @@ export type Database = {
       platform_update_settings: { Args: { p: Json }; Returns: undefined }
       properties_in_use: { Args: { p_tenant: string }; Returns: number }
       property_limit: { Args: { p_tenant: string }; Returns: number }
+      record_office_response: {
+        Args: {
+          p_extra_requirements?: string[]
+          p_kind: string
+          p_new_expiry?: string
+          p_new_licence_document?: string
+          p_new_licence_number?: string
+          p_note?: string
+          p_renewal: string
+        }
+        Returns: undefined
+      }
       reminder_kind: { Args: { p_days: number }; Returns: string }
       remove_member: {
         Args: { p_tenant: string; p_user: string }
@@ -1264,11 +1624,29 @@ export type Database = {
         Args: { p_name: string; p_tenant: string }
         Returns: undefined
       }
+      renewal_blockers: {
+        Args: { p_renewal: string }
+        Returns: {
+          code: string
+          label: string
+          status: string
+        }[]
+      }
       revoke_invitation: { Args: { p_invitation: string }; Returns: undefined }
       role_rank: {
         Args: { r: Database["public"]["Enums"]["member_role"] }
         Returns: number
       }
+      save_renewal_answers: {
+        Args: { p_answers: Json; p_renewal: string }
+        Returns: undefined
+      }
+      save_renewal_form: {
+        Args: { p_form: Json; p_renewal: string }
+        Returns: undefined
+      }
+      start_renewal: { Args: { p_license: string }; Returns: string }
+      start_renewals: { Args: { p_licenses: string[] }; Returns: number }
       submit_payment_proof: {
         Args: {
           p_file_name: string
@@ -1281,9 +1659,20 @@ export type Database = {
         Returns: string
       }
       tenant_writable: { Args: { p_tenant: string }; Returns: boolean }
+      withdraw_renewal: {
+        Args: { p_note?: string; p_renewal: string }
+        Returns: undefined
+      }
     }
     Enums: {
       member_role: "owner" | "admin" | "operator" | "viewer"
+      renewal_status:
+        | "preparing"
+        | "submitted"
+        | "info_requested"
+        | "approved"
+        | "rejected"
+        | "withdrawn"
       subscription_status:
         | "trialing"
         | "pending_payment"
@@ -1420,6 +1809,14 @@ export const Constants = {
   public: {
     Enums: {
       member_role: ["owner", "admin", "operator", "viewer"],
+      renewal_status: [
+        "preparing",
+        "submitted",
+        "info_requested",
+        "approved",
+        "rejected",
+        "withdrawn",
+      ],
       subscription_status: [
         "trialing",
         "pending_payment",

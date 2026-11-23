@@ -14,8 +14,8 @@ Decisiones tomadas (22 nov 2026):
 | 1. Base y acceso | Aprobada |
 | 2. Modelo de datos y RLS | Aprobada |
 | 3. Flujo principal | Aprobada |
-| 4. Cobro manual | En revisión |
-| 5. Renovación en lote asistida | Pendiente: faltan formularios oficiales |
+| 4. Cobro manual | Aprobada |
+| 5. Renovación en lote asistida | En revisión (requisitos provisionales) |
 | 6. Pulido y lanzamiento | Pendiente |
 
 ## Fase 0: criterios de aceptación
@@ -91,7 +91,24 @@ Fecha por confirmar: el plazo de renovación de alojamiento del 2 de diciembre n
 - [x] Panel de plataforma: ingreso recurrente mensual, activos, en prueba, pendientes, vencidos, suspendidos, bajas 30 días, por cobrar, vencido, cobrado 30 días; comprobantes por revisar; clientes con suspender/reactivar; configuración (datos bancarios, gracia, prueba, descuento, impuesto) y precios.
 - [x] Capa de proveedor de pago (`app/src/lib/billing/provider.ts`): hoy manual; Stripe se conecta ahí sin cambiar el resto.
 - [x] Pruebas: base de datos (ciclo completo, prorrateo, suspensión, aislamiento, solo-plataforma) en Postgres y Supabase, 35 unitarias (PDF, avisos), E2E de cobro manual completo; falla inyectada (quitar el bloqueo por suspensión) detectada.
-- [ ] Aplicar `supabase/setup/phase4.sql` y darte de alta como administrador de plataforma (línea comentada al final del archivo).
+- [x] `phase4.sql` aplicado.
+- [ ] Darte de alta como administrador de plataforma (línea comentada al final de `phase4.sql`).
 - [ ] Cargar tus datos bancarios en Plataforma → Configuración de cobro.
 - [ ] Recordatorios de cobro por WhatsApp (pendiente de cuenta Twilio/Meta).
 - [ ] Stripe (cuando tengas una empresa en un país compatible).
+
+## Fase 5: criterios de aceptación
+
+- [x] Trámite de renovación por licencia y ciclo, iniciado desde la propiedad o en lote (hasta 200 a la vez).
+- [x] Preguntas por tipo de licencia que arman la lista exacta (obligatorios y condicionales; la piscina sale de la propiedad).
+- [x] Cada requisito con estado: subido, falta o vencido (documento con fecha de vencimiento pasada).
+- [x] Datos del formulario pre-llenados (propiedad, licencia, dueño, contacto) y editables.
+- [x] Paquete PDF por propiedad y en lote: portada con los datos, índice con estados, anexos en orden (PDF copiados, fotos JPG/PNG incrustadas).
+- [x] Enlace al portal oficial; "Registrar como presentada" bloqueado en la base de datos hasta completar lo obligatorio, con referencia del portal y comprobante obligatorios.
+- [x] Respuestas de la oficina: pedido de más documentos (se suman a la lista y vuelven a bloquear), rechazo con motivo, aprobación solo con la licencia nueva como evidencia; al aprobar se archiva la licencia vieja y se crea la nueva con checklist limpio.
+- [x] Nunca se da por aprobado nada sin que el cliente lo registre con evidencia.
+- [x] Línea de tiempo del trámite y auditoría de cada paso; cuenta suspendida no puede avanzar trámites.
+- [x] Pruebas: base de datos (Postgres y Supabase; falla inyectada detectada), unitarias del paquete PDF, 2 E2E (trámite completo y lote).
+- [ ] Aplicar `supabase/setup/phase5.sql` en el proyecto real.
+- [ ] Enviar los correos de `docs/oficios.md` y ajustar los requisitos con las respuestas (hoy son provisionales).
+- [ ] Fase 2 del envío: conexión oficial con el IRD si la ofrecen.

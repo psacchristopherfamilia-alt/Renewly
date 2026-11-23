@@ -60,7 +60,7 @@ const T = {
   },
 };
 
-function drawLogo(page: PDFPage, x: number, y: number, size: number) {
+export function drawLogo(page: PDFPage, x: number, y: number, size: number) {
   const s = size / 64;
   page.drawRectangle({ x, y, width: size, height: size, color: BLUE });
   // Ring arrow and dot of the brand mark (SVG paths use a top-left origin).

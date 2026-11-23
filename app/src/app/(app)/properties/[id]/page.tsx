@@ -7,6 +7,7 @@ import { Notice, btn, btnDanger, btnGhost, card, input, label } from "@/componen
 import {
   addLicence, deleteDocument, deleteProperty, saveItemNote, toggleItem, updateProperty, uploadDocument,
 } from "@/lib/actions/portfolio";
+import { startRenewals } from "@/lib/actions/renewals";
 import { atLeast } from "@/lib/roles";
 import { getLocale, getT, requireOrg, tpl } from "@/lib/session";
 import { daysBetween, deadlineOf, licenceStatus, todayTci } from "@/lib/status";
@@ -77,6 +78,12 @@ export default async function PropertyPage({ params, searchParams }: { params: P
                 {tpl(p.deadline, { date: fmtDate(deadlineOf(row), lang) })}{!l.license_types.rules_confirmed && ` (${p.toConfirm})`} · {tpl(p.expires, { date: fmtDate(l.expires_on, lang) })} · {p.fee.replace(" (USD)", "")}: {money(l.fee_estimate)}
               </p>
               {days <= 14 && <p className="mt-3 rounded-md bg-bad-soft p-3 text-sm text-bad">{p.renewNow}</p>}
+              {isAdmin && (
+                <form action={startRenewals} className="mt-4">
+                  <input type="hidden" name="license_id" value={l.id} />
+                  <SubmitButton className={btn}>{t.renewals.startOne}</SubmitButton>
+                </form>
+              )}
             </div>
             <div className={card}>
               <h3 className="font-display text-lg">{p.checklist}</h3>
