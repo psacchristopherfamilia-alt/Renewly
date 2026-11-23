@@ -15,8 +15,8 @@ Decisiones tomadas (22 nov 2026):
 | 2. Modelo de datos y RLS | Aprobada |
 | 3. Flujo principal | Aprobada |
 | 4. Cobro manual | Aprobada |
-| 5. Renovación en lote asistida | En revisión (requisitos provisionales) |
-| 6. Pulido y lanzamiento | Pendiente |
+| 5. Renovación en lote asistida | Aprobada (requisitos provisionales hasta respuesta de las oficinas) |
+| 6. Pulido y lanzamiento | En curso |
 
 ## Fase 0: criterios de aceptación
 
@@ -110,5 +110,17 @@ Fecha por confirmar: el plazo de renovación de alojamiento del 2 de diciembre n
 - [x] Línea de tiempo del trámite y auditoría de cada paso; cuenta suspendida no puede avanzar trámites.
 - [x] Pruebas: base de datos (Postgres y Supabase; falla inyectada detectada), unitarias del paquete PDF, 2 E2E (trámite completo y lote).
 - [ ] Aplicar `supabase/setup/phase5.sql` en el proyecto real.
-- [ ] Enviar los correos de `docs/oficios.md` y ajustar los requisitos con las respuestas (hoy son provisionales).
+- [x] Correos enviados el 23 nov 2026 a tourismregulations@gov.tc y tcirevenuedepartment@gov.tc.
+- [ ] Ajustar los requisitos con las respuestas (hoy son provisionales).
 - [ ] Fase 2 del envío: conexión oficial con el IRD si la ofrecen.
+
+## Fase 6: pulido y lanzamiento
+
+- [x] Dependencias: 0 vulnerabilidades (`npm audit --omit=dev`) en las dos apps.
+- [x] Encabezados de seguridad con CSP; revisión de seguridad en `docs/security.md`.
+- [x] Lighthouse: página de venta 100/100/96/100 (escritorio) y 96/100/96/100 (móvil); app 100/100/100 (SEO intencionalmente bloqueado).
+- [x] Enlace al portal nuevo de alojamiento (regcitz.gov.tc) y pregunta frecuente que lo explica.
+- [x] Copias de seguridad cifradas diarias (`.github/workflows/backup.yml`), plan de pruebas (`docs/test-plan.md`), guía de lanzamiento y piloto (`docs/launch.md`).
+- [x] Corrección: selector de tipo de licencia con orden fijo.
+- [ ] Proyectos de Vercel, dominio, variables secretas, Resend, URLs de Auth.
+- [ ] Piloto con 2–3 administradores.

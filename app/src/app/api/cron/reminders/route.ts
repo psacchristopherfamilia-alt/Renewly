@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { cronAuthorized } from "@/lib/cron";
 import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
 import { type DueReminder, buildReminderEmail } from "@/lib/reminders";
@@ -11,8 +12,7 @@ export const dynamic = "force-dynamic";
 // Asks the database which reminders are due today in TCI, emails owners and admins, and records each one,
 // so a second run on the same day sends nothing.
 export async function GET(req: NextRequest) {
-  const secret = process.env.CRON_SECRET;
-  if (!secret || req.headers.get("authorization") !== `Bearer ${secret}`) {
+  if (!cronAuthorized(req.headers.get("authorization"))) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL, key = process.env.SUPABASE_SERVICE_ROLE_KEY;

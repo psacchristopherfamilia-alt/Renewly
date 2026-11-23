@@ -1,0 +1,36 @@
+name: backup
+# Nightly encrypted database backup (in addition to Supabase's own backups on paid plans).
+# Needs two repository secrets: SUPABASE_DB_URL (Project Settings → Database → connection string, session
+# pooler) and BACKUP_PASSPHRASE (long random string, kept also outside GitHub). Without them it does nothing.
+# The dump is encrypted with AES-256 before it leaves the runner: this repository is public and a plain dump
+# would expose customer data. Restore: gpg -d backup.sql.gz.gpg | gunzip | psql "$DB_URL"
+on:
+  schedule: [{ cron: "30 7 * * *" }]   # 03:30 TCI
+  workflow_dispatch:
+jobs:
+  dump:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check configuration
+        id: cfg
+        env: { DB: "${{ secrets.SUPABASE_DB_URL }}", PASS: "${{ secrets.BACKUP_PASSPHRASE }}" }
+        run: |
+          if [ -z "$DB" ] || [ -z "$PASS" ]; then echo "configured=false" >> "$GITHUB_OUTPUT"; echo "Backup secrets not set: skipping."; else echo "configured=true" >> "$GITHUB_OUTPUT"; fi
+      - name: Install Postgres 17 client
+        if: steps.cfg.outputs.configured == 'true'
+        run: |
+          sudo install -d /usr/share/postgresql-common/pgdg
+          sudo curl -fsSL -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc https://www.postgresql.org/media/keys/ACCC4CF8.asc
+          echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
+          sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client-17
+      - name: Dump, compress and encrypt
+        if: steps.cfg.outputs.configured == 'true'
+        env: { DB: "${{ secrets.SUPABASE_DB_URL }}", PASS: "${{ secrets.BACKUP_PASSPHRASE }}" }
+        run: |
+          set -euo pipefail
+          /usr/lib/postgresql/17/bin/pg_dump "$DB" --schema=public --schema=auth --no-owner --no-privileges | gzip -9 \
+            | gpg --batch --yes --symmetric --cipher-algo AES256 --passphrase "$PASS" -o "renewly-$(date -u +%F).sql.gz.gpg"
+          ls -la renewly-*.gpg
+      - uses: actions/upload-artifact@v4
+        if: steps.cfg.outputs.configured == 'true'
+        with: { name: "db-backup", path: "renewly-*.sql.gz.gpg", retention-days: 30 }

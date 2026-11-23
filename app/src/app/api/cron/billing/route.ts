@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { cronAuthorized } from "@/lib/cron";
 import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
 import { type BillingNotice, buildBillingEmail } from "@/lib/billing/notices";
@@ -10,8 +11,7 @@ export const dynamic = "force-dynamic";
 // Daily billing job: "Authorization: Bearer <CRON_SECRET>". Runs the billing cycle in the database (renewal
 // invoices, overdue, suspension, cancellation) and emails the pending notices. Safe to run more than once a day.
 export async function GET(req: NextRequest) {
-  const secret = process.env.CRON_SECRET;
-  if (!secret || req.headers.get("authorization") !== `Bearer ${secret}`) {
+  if (!cronAuthorized(req.headers.get("authorization"))) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL, key = process.env.SUPABASE_SERVICE_ROLE_KEY;

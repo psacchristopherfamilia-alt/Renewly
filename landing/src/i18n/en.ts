@@ -124,6 +124,7 @@ const en: Dictionary = {
     title: "Frequently asked questions",
     items: [
       { q: "Does Renewly file renewals with the government?", a: "No. Renewly prepares the forms and the document package; you file them on the official portal or at the office with your own account and keep the receipt in Renewly." },
+      { q: "What about the government's online portal?", a: "You keep using it: that is where you file each renewal with your account. Renewly helps before and after: it tracks the dates of all your properties, reminds you, builds each property's document list, prepares the data and keeps the reference and receipt of every filing." },
       { q: "Do you guarantee my licence will be approved?", a: "No. Approval depends on the relevant department. Renewly helps you not miss deadlines or requirements." },
       { q: "Which licences does it cover?", a: "The accommodation licence (Department of Tourism Regulations) and the business licence (Inland Revenue Department) of Turks and Caicos." },
       { q: "Are dates and rules always up to date?", a: "We track official publications, but they can change. Always confirm with the relevant department." },

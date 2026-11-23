@@ -124,6 +124,7 @@ const es = {
     title: "Preguntas frecuentes",
     items: [
       { q: "¿Renewly presenta las renovaciones ante el gobierno?", a: "No. Renewly prepara los formularios y el paquete de documentos; tú los presentas en el portal o la oficina oficial con tu propia cuenta y guardas el comprobante en Renewly." },
+      { q: "¿Y el portal en línea del gobierno?", a: "Lo usas igual: ahí presentas cada renovación con tu cuenta. Renewly te ayuda antes y después: sigue las fechas de todas tus propiedades, te avisa, arma la lista de documentos de cada una, prepara los datos y guarda la referencia y el comprobante de cada trámite." },
       { q: "¿Garantizan que mi licencia será aprobada?", a: "No. La aprobación depende del departamento correspondiente. Renewly te ayuda a no olvidar plazos ni requisitos." },
       { q: "¿Qué licencias cubre?", a: "La licencia de alojamiento (Department of Tourism Regulations) y la licencia comercial (Inland Revenue Department) de Turks and Caicos." },
       { q: "¿Las fechas y reglas están siempre al día?", a: "Las mantenemos según las publicaciones oficiales, pero pueden cambiar. Confirma siempre con el departamento correspondiente." },

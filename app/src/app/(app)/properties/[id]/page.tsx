@@ -41,7 +41,7 @@ export default async function PropertyPage({ params, searchParams }: { params: P
   const licences = (licRaw ?? []) as unknown as Licence[];
   const { data: docRaw } = await supabase.from("documents").select("id, file_name, kind, checklist_item_id, created_at").eq("property_id", id).order("created_at", { ascending: false });
   const docs = (docRaw ?? []) as Doc[];
-  const { data: types } = await supabase.from("license_types").select("code, name_es, name_en");
+  const { data: types } = await supabase.from("license_types").select("code, name_es, name_en").order("code");
   const { data: people } = await supabase.from("profiles").select("id, full_name, email");
   const who = (uid: string | null) => people?.find((x) => x.id === uid)?.full_name || people?.find((x) => x.id === uid)?.email || "—";
   const okText = sp.ok === "saved" ? p.saved : undefined;
