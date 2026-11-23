@@ -45,5 +45,7 @@ Fecha por confirmar: el plazo de renovación de alojamiento del 2 de diciembre n
 - [x] Pruebas: 15 unitarias, RLS por rol (Postgres 16 y Supabase real), 3 E2E con Playwright (registro → organización → invitación → permisos), linter de Supabase sin errores.
 - [x] CI: lint, tipos, unitarias, build, pruebas de base de datos y E2E con Supabase local.
 - [x] Monitoreo: `/api/health` y errores del servidor en JSON.
-- [ ] Proyectos de Supabase de staging y producción (faltan tus cuentas).
+- [x] Proyecto de Supabase real: se reutilizó `obraiq` (ref `mawdjmefsqlshiksofik`, us-east-1); ObraIQ quedó archivado en `obraiq_archive` sin borrar datos. Migraciones 0001 y 0002 aplicadas y verificadas.
+- [ ] Aplicar `20261123000003_hardening.sql` (correcciones de los avisos de Supabase).
+- [ ] Proyecto de staging separado (hoy hay un solo proyecto).
 - [ ] Sentry u otro servicio de alertas (falta cuenta; el punto de conexión ya existe).

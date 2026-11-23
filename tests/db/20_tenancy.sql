@@ -165,3 +165,16 @@ do $$ declare v_org uuid := (select v::uuid from t where k = 'org'); begin
     ('member.invited','member.joined','member.role_changed','member.removed','member.left','organization.renamed','member.invitation_revoked')) >= 10,
     'sensitive actions audited';
 end $$;
+
+-- Visitors without a session cannot call any function of the API.
+set role anon;
+select set_config('request.jwt.claims', '', false);
+do $$ begin
+  begin perform public.is_member(gen_random_uuid()); raise exception 'anon called is_member';
+  exception when insufficient_privilege then null; end;
+  begin perform public.my_role(gen_random_uuid()); raise exception 'anon called my_role';
+  exception when insufficient_privilege then null; end;
+  begin perform public.create_organization('Anon Co'); raise exception 'anon called create_organization';
+  exception when insufficient_privilege then null; end;
+end $$;
+reset role;
