@@ -11,8 +11,8 @@ Decisiones tomadas (22 nov 2026):
 | Fase | Estado |
 |---|---|
 | 0. Marca y página de venta | Aprobada |
-| 1. Base y acceso | En revisión |
-| 2. Modelo de datos y RLS | Pendiente |
+| 1. Base y acceso | Aprobada |
+| 2. Modelo de datos y RLS | En revisión |
 | 3. Flujo principal | Pendiente |
 | 4. Cobro manual | Pendiente |
 | 5. Renovación en lote asistida | Pendiente: faltan formularios oficiales |
@@ -46,6 +46,19 @@ Fecha por confirmar: el plazo de renovación de alojamiento del 2 de diciembre n
 - [x] CI: lint, tipos, unitarias, build, pruebas de base de datos y E2E con Supabase local.
 - [x] Monitoreo: `/api/health` y errores del servidor en JSON.
 - [x] Proyecto de Supabase real: se reutilizó `obraiq` (ref `mawdjmefsqlshiksofik`, us-east-1); ObraIQ quedó archivado en `obraiq_archive` sin borrar datos. Migraciones 0001 y 0002 aplicadas y verificadas.
-- [ ] Aplicar `20261123000003_hardening.sql` (correcciones de los avisos de Supabase).
+- [x] `20261123000003_hardening.sql` aplicado; avisos de Supabase revisados (solo quedan los intencionales).
 - [ ] Proyecto de staging separado (hoy hay un solo proyecto).
 - [ ] Sentry u otro servicio de alertas (falta cuenta; el punto de conexión ya existe).
+
+## Fase 2: criterios de aceptación
+
+- [x] Tablas `properties`, `licenses`, `checklist_items`, `documents` con `tenant_id` y RLS; llaves compuestas `(id, tenant_id)` que impiden mezclar datos entre organizaciones.
+- [x] Reglas oficiales en tablas (`license_types`: vencimiento y fecha límite de solicitud; `checklist_templates`: requisitos por tipo, condicionales como piscina). Alojamiento marcado "por confirmar".
+- [x] Al crear una licencia se arma su checklist con las plantillas que aplican a la propiedad.
+- [x] Permisos: solo lectura ve; operador marca checklist, escribe notas y sube documentos; administrador crea y edita propiedades, licencias y requisitos, y borra documentos. Nadie puede cambiar `tenant_id`, autoría ni quién marcó un ítem.
+- [x] Vista `license_overview` para el panel: días para vencer, fecha límite de solicitud y progreso del checklist.
+- [x] Almacenamiento privado `documents` (15 MB, PDF e imágenes), carpeta por organización, enlaces firmados; sin URL pública.
+- [x] Auditoría automática de altas, cambios (con los campos cambiados) y bajas.
+- [x] Pruebas: RLS por rol en Postgres 16 y Supabase real (con 2 fallas inyectadas a propósito que las pruebas detectan), 12 pruebas de almacenamiento por API, linter de Supabase sin errores; CI ampliado.
+- [ ] Aplicar `supabase/setup/phase2.sql` en el proyecto real.
+- [ ] Confirmar con Tourism Regulations e IRD la fecha del 2 de diciembre y los requisitos de cada checklist.

@@ -53,3 +53,7 @@ jobs:
           npm run build
           (npx next start -p 3200 &) && npx wait-on -t 60000 http://localhost:3200/api/health
           npx playwright test --trace off
+      - name: Storage permissions per role
+        run: |
+          eval "$(supabase status -o env | grep -E '^(API_URL|ANON_KEY|PUBLISHABLE_KEY|SERVICE_ROLE_KEY|SECRET_KEY)=')"
+          SUPABASE_URL="$API_URL" SUPABASE_ANON_KEY="${PUBLISHABLE_KEY:-$ANON_KEY}" SUPABASE_SERVICE_ROLE_KEY="${SECRET_KEY:-$SERVICE_ROLE_KEY}" node tests/storage/storage-rls.mjs
