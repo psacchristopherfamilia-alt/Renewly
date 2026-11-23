@@ -13,8 +13,8 @@ Decisiones tomadas (22 nov 2026):
 | 0. Marca y página de venta | Aprobada |
 | 1. Base y acceso | Aprobada |
 | 2. Modelo de datos y RLS | Aprobada |
-| 3. Flujo principal | En revisión |
-| 4. Cobro manual | Pendiente |
+| 3. Flujo principal | Aprobada |
+| 4. Cobro manual | En revisión |
 | 5. Renovación en lote asistida | Pendiente: faltan formularios oficiales |
 | 6. Pulido y lanzamiento | Pendiente |
 
@@ -74,6 +74,24 @@ Fecha por confirmar: el plazo de renovación de alojamiento del 2 de diciembre n
 - [x] Página de ayuda con pasos, roles y preguntas frecuentes.
 - [x] Recordatorios por correo a propietarios y administradores 30, 14, 7, 3 y 1 día antes, el día y una vez vencida; nunca dos veces ni para el ejemplo. Tarea diaria protegida con `CRON_SECRET`.
 - [x] Pruebas: 30 unitarias, base de datos (Postgres y Supabase), 12 de almacenamiento, 5 E2E (incluye intento de otra organización de abrir una propiedad o documento ajeno).
-- [ ] Aplicar `supabase/setup/phase3.sql` en el proyecto real.
+- [x] `phase3.sql` aplicado en el proyecto real.
 - [ ] Configurar Resend (`RESEND_API_KEY`, `EMAIL_FROM`), `CRON_SECRET` y `SUPABASE_SERVICE_ROLE_KEY` en el hosting para que salgan los recordatorios.
 - [ ] Recordatorios por WhatsApp: quedan para la fase de cobro y extras (requiere cuenta de Twilio o Meta).
+
+## Fase 4: criterios de aceptación
+
+- [x] Planes en tabla (Por propiedad US$39 × propiedades, descuento por volumen; Gestor US$149 hasta 25), editables por la plataforma.
+- [x] Prueba gratis automática para cada organización (14 días, configurable).
+- [x] Elegir plan (solo el propietario) → factura con número, referencia única de transferencia y vencimiento; PDF de factura y recibo con la marca.
+- [x] Comprobante subido por propietario o administrador (almacenamiento privado `billing`); aprobación o rechazo con motivo por el administrador de plataforma.
+- [x] Estados: prueba, pendiente de pago, comprobante recibido, activa, vencida, suspendida, cancelada.
+- [x] Tarea diaria `/api/cron/billing`: factura de renovación antes del fin de período, vencida al terminar, suspensión tras el período de gracia (10 días, configurable), cancelación al final del período; avisos por correo sin repetir.
+- [x] Cambios de plan: subidas con factura prorrateada inmediata; bajadas programadas para la renovación; cancelación al final del período.
+- [x] Límites en la base de datos: máximo de propiedades por plan (el ejemplo no cuenta) y cuenta suspendida en solo lectura (RLS en todas las escrituras).
+- [x] Panel de plataforma: ingreso recurrente mensual, activos, en prueba, pendientes, vencidos, suspendidos, bajas 30 días, por cobrar, vencido, cobrado 30 días; comprobantes por revisar; clientes con suspender/reactivar; configuración (datos bancarios, gracia, prueba, descuento, impuesto) y precios.
+- [x] Capa de proveedor de pago (`app/src/lib/billing/provider.ts`): hoy manual; Stripe se conecta ahí sin cambiar el resto.
+- [x] Pruebas: base de datos (ciclo completo, prorrateo, suspensión, aislamiento, solo-plataforma) en Postgres y Supabase, 35 unitarias (PDF, avisos), E2E de cobro manual completo; falla inyectada (quitar el bloqueo por suspensión) detectada.
+- [ ] Aplicar `supabase/setup/phase4.sql` y darte de alta como administrador de plataforma (línea comentada al final del archivo).
+- [ ] Cargar tus datos bancarios en Plataforma → Configuración de cobro.
+- [ ] Recordatorios de cobro por WhatsApp (pendiente de cuenta Twilio/Meta).
+- [ ] Stripe (cuando tengas una empresa en un país compatible).

@@ -30,10 +30,22 @@ function readProperty(fd: FormData) {
   });
 }
 
+// When a write affected no rows, tell apart "your role can't" from "the account is suspended".
+async function deniedCode(supabase: Awaited<ReturnType<typeof requireOrg>>["supabase"], tenant: string, msg?: string) {
+  const c = code(msg ?? "forbidden");
+  if (c !== "forbidden") return c;
+  const { data } = await supabase.rpc("tenant_writable", { p_tenant: tenant });
+  return data === false ? "subscription_suspended" : "forbidden";
+}
+
 function back(path: string, params: Record<string, string>): never {
   redirect(`${path}${path.includes("?") ? "&" : "?"}${new URLSearchParams(params)}`);
 }
-const code = (msg?: string) => (msg?.includes("row-level security") || msg?.includes("permission denied") || msg?.includes("forbidden") ? "forbidden" : "generic");
+const code = (msg?: string) =>
+  msg?.includes("plan_limit") ? "plan_limit"
+  : msg?.includes("subscription_suspended") ? "subscription_suspended"
+  : msg?.includes("row-level security") || msg?.includes("permission denied") || msg?.includes("forbidden") ? "forbidden"
+  : "generic";
 
 export async function createProperty(fd: FormData) {
   const { supabase, org } = await requireOrg();
@@ -46,23 +58,23 @@ export async function createProperty(fd: FormData) {
 }
 
 export async function updateProperty(fd: FormData) {
-  const { supabase } = await requireOrg();
+  const { supabase, org } = await requireOrg();
   const id = String(fd.get("id") ?? "");
   const p = readProperty(fd);
   if (!p.success) back(`/properties/${id}`, { error: "invalid_name" });
   const { error, count } = await supabase.from("properties").update(p.data, { count: "exact" }).eq("id", id);
-  if (error || !count) back(`/properties/${id}`, { error: code(error?.message ?? "forbidden") });
+  if (error || !count) back(`/properties/${id}`, { error: await deniedCode(supabase, org.id, error?.message) });
   revalidatePath(`/properties/${id}`);
   back(`/properties/${id}`, { ok: "saved" });
 }
 
 export async function deleteProperty(fd: FormData) {
-  const { supabase } = await requireOrg();
+  const { supabase, org } = await requireOrg();
   const id = String(fd.get("id") ?? "");
   // Remove the stored files first (RLS on storage applies), then the rows (cascades licences, checklist, documents).
   const { data: docs } = await supabase.from("documents").select("storage_path").eq("property_id", id);
   const { error, count } = await supabase.from("properties").delete({ count: "exact" }).eq("id", id);
-  if (error || !count) back(`/properties/${id}`, { error: code(error?.message ?? "forbidden") });
+  if (error || !count) back(`/properties/${id}`, { error: await deniedCode(supabase, org.id, error?.message) });
   if (docs?.length) await supabase.storage.from("documents").remove(docs.map((d) => d.storage_path));
   revalidatePath("/dashboard");
   redirect("/dashboard?ok=saved");
@@ -89,22 +101,22 @@ export async function addLicence(fd: FormData) {
 }
 
 export async function toggleItem(fd: FormData) {
-  const { supabase } = await requireOrg();
+  const { supabase, org } = await requireOrg();
   const id = String(fd.get("id") ?? "");
   const property = String(fd.get("property_id") ?? "");
   const { error, count } = await supabase.from("checklist_items").update({ done: fd.get("done") === "true" }, { count: "exact" }).eq("id", id);
-  if (error || !count) back(`/properties/${property}`, { error: code(error?.message ?? "forbidden") });
+  if (error || !count) back(`/properties/${property}`, { error: await deniedCode(supabase, org.id, error?.message) });
   revalidatePath(`/properties/${property}`);
   redirect(`/properties/${property}#item-${id}`);
 }
 
 export async function saveItemNote(fd: FormData) {
-  const { supabase } = await requireOrg();
+  const { supabase, org } = await requireOrg();
   const id = String(fd.get("id") ?? "");
   const property = String(fd.get("property_id") ?? "");
   const { error, count } = await supabase.from("checklist_items")
     .update({ notes: String(fd.get("notes") ?? "").trim().slice(0, 2000) }, { count: "exact" }).eq("id", id);
-  if (error || !count) back(`/properties/${property}`, { error: code(error?.message ?? "forbidden") });
+  if (error || !count) back(`/properties/${property}`, { error: await deniedCode(supabase, org.id, error?.message) });
   revalidatePath(`/properties/${property}`);
   redirect(`/properties/${property}#item-${id}`);
 }
@@ -137,12 +149,12 @@ export async function uploadDocument(fd: FormData) {
 }
 
 export async function deleteDocument(fd: FormData) {
-  const { supabase } = await requireOrg();
+  const { supabase, org } = await requireOrg();
   const id = String(fd.get("id") ?? "");
   const property = String(fd.get("property_id") ?? "");
   const { data: doc } = await supabase.from("documents").select("storage_path").eq("id", id).single();
   const { error, count } = await supabase.from("documents").delete({ count: "exact" }).eq("id", id);
-  if (error || !count || !doc) back(`/properties/${property}`, { error: code(error?.message ?? "forbidden") });
+  if (error || !count || !doc) back(`/properties/${property}`, { error: await deniedCode(supabase, org.id, error?.message) });
   await supabase.storage.from("documents").remove([doc.storage_path]);
   revalidatePath(`/properties/${property}`);
   back(`/properties/${property}`, { ok: "saved" });
@@ -156,7 +168,8 @@ export async function importCsv(fd: FormData) {
   const { data, error } = await supabase.rpc("import_properties", { p_tenant: org.id, p_rows: rows });
   if (error) {
     const row = error.message.match(/import_row_(\d+)/)?.[1];
-    back("/import", { error: code(error.message) === "forbidden" ? "forbidden" : "import_failed", ...(row ? { row: String(Number(row) + 1) } : {}) });
+    const c = code(error.message);
+    back("/import", { error: c === "generic" ? "import_failed" : c, ...(row ? { row: String(Number(row) + 1) } : {}) });
   }
   revalidatePath("/dashboard");
   back("/dashboard", { ok: "imported", n: String(data) });

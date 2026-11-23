@@ -52,7 +52,8 @@ jobs:
           printf 'NEXT_PUBLIC_SUPABASE_URL=%s\nNEXT_PUBLIC_SUPABASE_ANON_KEY=%s\nAPP_URL=http://localhost:3200\n' "$API_URL" "${PUBLISHABLE_KEY:-$ANON_KEY}" > .env.local
           npm run build
           (npx next start -p 3200 &) && npx wait-on -t 60000 http://localhost:3200/api/health
-          npx playwright test --trace off
+          eval "$(supabase status -o env | grep -E '^(SERVICE_ROLE_KEY|SECRET_KEY)=')"
+          E2E_SERVICE_ROLE_KEY="${SECRET_KEY:-$SERVICE_ROLE_KEY}" npx playwright test --trace off
       - name: Storage permissions per role
         run: |
           eval "$(supabase status -o env | grep -E '^(API_URL|ANON_KEY|PUBLISHABLE_KEY|SERVICE_ROLE_KEY|SECRET_KEY)=')"

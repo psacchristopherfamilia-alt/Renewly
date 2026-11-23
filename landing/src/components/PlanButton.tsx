@@ -4,15 +4,17 @@ import { track } from "@vercel/analytics";
 import type { PlanId } from "@/lib/site";
 import { PLAN_EVENT } from "./ContactForm";
 
-/** Plan CTA: preselects the plan in the contact form and scrolls to it. */
+const APP_URL = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/\/$/, "");
+
+/** With the app live, the plan button opens sign-up (free trial, then the plan and payment instructions in Plan). */
 export function PlanButton({ plan, className, children }: { plan: PlanId; className: string; children: React.ReactNode }) {
   return (
     <a
-      href="#contact"
+      href={APP_URL ? `${APP_URL}/signup?plan=${plan}` : "#contact"}
       className={className}
       onClick={() => {
         track("plan_cta", { plan });
-        window.dispatchEvent(new CustomEvent(PLAN_EVENT, { detail: plan }));
+        if (!APP_URL) window.dispatchEvent(new CustomEvent(PLAN_EVENT, { detail: plan }));
       }}
     >
       {children}

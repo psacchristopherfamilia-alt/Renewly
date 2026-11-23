@@ -11,4 +11,6 @@ create function auth.uid() returns uuid language sql stable as $$ select nullif(
 grant usage on schema auth to anon, authenticated;
 grant usage on schema public to anon, authenticated;
 -- Supabase gives these roles full table privileges by default; RLS does the filtering.
-alter default privileges in schema public grant all on tables to anon, authenticated;
+alter default privileges in schema public grant all on tables to anon, authenticated, service_role;
+alter default privileges in schema public grant all on sequences to service_role;
+grant usage on schema public to service_role;

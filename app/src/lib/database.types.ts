@@ -50,6 +50,111 @@ export type Database = {
           },
         ]
       }
+      billing_events: {
+        Row: {
+          created_at: string
+          data: Json
+          dedupe_key: string
+          id: number
+          invoice_id: string | null
+          kind: string
+          notified_at: string | null
+          tenant_id: string
+        }
+        Insert: {
+          created_at?: string
+          data?: Json
+          dedupe_key: string
+          id?: never
+          invoice_id?: string | null
+          kind: string
+          notified_at?: string | null
+          tenant_id: string
+        }
+        Update: {
+          created_at?: string
+          data?: Json
+          dedupe_key?: string
+          id?: never
+          invoice_id?: string | null
+          kind?: string
+          notified_at?: string | null
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "billing_events_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "billing_events_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      billing_settings: {
+        Row: {
+          bank_details: string
+          grace_days: number
+          id: number
+          invoice_due_days: number
+          payee_address: string
+          payee_name: string
+          payment_note: string
+          renewal_notice_days: number
+          support_email: string
+          tax_label: string
+          tax_pct: number
+          trial_days: number
+          updated_at: string
+          updated_by: string | null
+          volume_discount_from: number
+          volume_discount_pct: number
+        }
+        Insert: {
+          bank_details?: string
+          grace_days?: number
+          id?: number
+          invoice_due_days?: number
+          payee_address?: string
+          payee_name?: string
+          payment_note?: string
+          renewal_notice_days?: number
+          support_email?: string
+          tax_label?: string
+          tax_pct?: number
+          trial_days?: number
+          updated_at?: string
+          updated_by?: string | null
+          volume_discount_from?: number
+          volume_discount_pct?: number
+        }
+        Update: {
+          bank_details?: string
+          grace_days?: number
+          id?: number
+          invoice_due_days?: number
+          payee_address?: string
+          payee_name?: string
+          payment_note?: string
+          renewal_notice_days?: number
+          support_email?: string
+          tax_label?: string
+          tax_pct?: number
+          trial_days?: number
+          updated_at?: string
+          updated_by?: string | null
+          volume_discount_from?: number
+          volume_discount_pct?: number
+        }
+        Relationships: []
+      }
       checklist_items: {
         Row: {
           created_at: string
@@ -287,6 +392,102 @@ export type Database = {
           },
         ]
       }
+      invoices: {
+        Row: {
+          approved_by: string | null
+          created_at: string
+          currency: string
+          discount: number
+          due_on: string
+          id: string
+          issued_on: string
+          kind: string
+          number: string
+          paid_at: string | null
+          paid_method: string | null
+          paid_reference: string | null
+          period_end: string
+          period_start: string
+          plan: string
+          quantity: number
+          reference: string
+          rejected_reason: string | null
+          status: string
+          subtotal: number
+          tax: number
+          tenant_id: string
+          total: number
+          unit_price: number
+        }
+        Insert: {
+          approved_by?: string | null
+          created_at?: string
+          currency?: string
+          discount?: number
+          due_on: string
+          id?: string
+          issued_on?: string
+          kind?: string
+          number: string
+          paid_at?: string | null
+          paid_method?: string | null
+          paid_reference?: string | null
+          period_end: string
+          period_start: string
+          plan: string
+          quantity: number
+          reference: string
+          rejected_reason?: string | null
+          status?: string
+          subtotal: number
+          tax?: number
+          tenant_id: string
+          total: number
+          unit_price: number
+        }
+        Update: {
+          approved_by?: string | null
+          created_at?: string
+          currency?: string
+          discount?: number
+          due_on?: string
+          id?: string
+          issued_on?: string
+          kind?: string
+          number?: string
+          paid_at?: string | null
+          paid_method?: string | null
+          paid_reference?: string | null
+          period_end?: string
+          period_start?: string
+          plan?: string
+          quantity?: number
+          reference?: string
+          rejected_reason?: string | null
+          status?: string
+          subtotal?: number
+          tax?: number
+          tenant_id?: string
+          total?: number
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_plan_fkey"
+            columns: ["plan"]
+            isOneToOne: false
+            referencedRelation: "plans"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "invoices_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leads: {
         Row: {
           company: string
@@ -509,6 +710,101 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_proofs: {
+        Row: {
+          created_at: string
+          file_name: string
+          id: string
+          invoice_id: string
+          mime_type: string
+          note: string
+          size_bytes: number
+          storage_path: string
+          tenant_id: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          file_name: string
+          id?: string
+          invoice_id: string
+          mime_type: string
+          note?: string
+          size_bytes: number
+          storage_path: string
+          tenant_id: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          file_name?: string
+          id?: string
+          invoice_id?: string
+          mime_type?: string
+          note?: string
+          size_bytes?: number
+          storage_path?: string
+          tenant_id?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_proofs_invoice_id_tenant_id_fkey"
+            columns: ["invoice_id", "tenant_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id", "tenant_id"]
+          },
+        ]
+      }
+      plans: {
+        Row: {
+          active: boolean
+          code: string
+          max_properties: number | null
+          name_en: string
+          name_es: string
+          pricing: string
+          sort: number
+          unit_price: number
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          max_properties?: number | null
+          name_en: string
+          name_es: string
+          pricing: string
+          sort?: number
+          unit_price: number
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          max_properties?: number | null
+          name_en?: string
+          name_es?: string
+          pricing?: string
+          sort?: number
+          unit_price?: number
+        }
+        Relationships: []
+      }
+      platform_admins: {
+        Row: {
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -647,6 +943,79 @@ export type Database = {
           },
         ]
       }
+      subscriptions: {
+        Row: {
+          cancel_at: string | null
+          current_period_end: string | null
+          current_period_start: string | null
+          pending_plan: string | null
+          pending_quantity: number | null
+          plan: string | null
+          provider: string
+          provider_ref: string | null
+          quantity: number
+          status: Database["public"]["Enums"]["subscription_status"]
+          suspended_at: string | null
+          tenant_id: string
+          trial_ends_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          cancel_at?: string | null
+          current_period_end?: string | null
+          current_period_start?: string | null
+          pending_plan?: string | null
+          pending_quantity?: number | null
+          plan?: string | null
+          provider?: string
+          provider_ref?: string | null
+          quantity?: number
+          status?: Database["public"]["Enums"]["subscription_status"]
+          suspended_at?: string | null
+          tenant_id: string
+          trial_ends_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cancel_at?: string | null
+          current_period_end?: string | null
+          current_period_start?: string | null
+          pending_plan?: string | null
+          pending_quantity?: number | null
+          plan?: string | null
+          provider?: string
+          provider_ref?: string | null
+          quantity?: number
+          status?: Database["public"]["Enums"]["subscription_status"]
+          suspended_at?: string | null
+          tenant_id?: string
+          trial_ends_at?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_pending_plan_fkey"
+            columns: ["pending_plan"]
+            isOneToOne: false
+            referencedRelation: "plans"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "subscriptions_plan_fkey"
+            columns: ["plan"]
+            isOneToOne: false
+            referencedRelation: "plans"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "subscriptions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: true
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       license_overview: {
@@ -699,10 +1068,39 @@ export type Database = {
         }
         Returns: undefined
       }
+      _billing_event: {
+        Args: {
+          p_data?: Json
+          p_invoice?: string
+          p_key: string
+          p_kind: string
+          p_tenant: string
+        }
+        Returns: undefined
+      }
+      _issue_invoice: {
+        Args: {
+          p_due: string
+          p_end: string
+          p_factor?: number
+          p_kind?: string
+          p_plan: string
+          p_quantity: number
+          p_start: string
+          p_tenant: string
+        }
+        Returns: string
+      }
       _owner_count: { Args: { p_tenant: string }; Returns: number }
       _path_tenant: { Args: { p_name: string }; Returns: string }
+      _require_platform_admin: { Args: never; Returns: undefined }
       _require_user: { Args: never; Returns: string }
       accept_invitation: { Args: { p_token: string }; Returns: string }
+      billing_tick: { Args: { p_today?: string }; Returns: number }
+      cancel_subscription: {
+        Args: { p_cancel?: boolean; p_tenant: string }
+        Returns: undefined
+      }
       change_member_role: {
         Args: {
           p_role: Database["public"]["Enums"]["member_role"]
@@ -710,6 +1108,10 @@ export type Database = {
           p_user: string
         }
         Returns: undefined
+      }
+      choose_plan: {
+        Args: { p_plan: string; p_quantity?: number; p_tenant: string }
+        Returns: string
       }
       clear_sample_data: { Args: { p_tenant: string }; Returns: number }
       create_organization: { Args: { p_name: string }; Returns: string }
@@ -759,7 +1161,9 @@ export type Database = {
         Returns: string
       }
       is_member: { Args: { p_tenant: string }; Returns: boolean }
+      is_platform_admin: { Args: never; Returns: boolean }
       load_sample_data: { Args: { p_tenant: string }; Returns: number }
+      mark_billing_notice_sent: { Args: { p_id: number }; Returns: undefined }
       mark_reminder_sent: {
         Args: {
           p_deadline: string
@@ -785,6 +1189,72 @@ export type Database = {
         Args: { p_from?: string; p_type: string }
         Returns: string
       }
+      pending_billing_notices: {
+        Args: never
+        Returns: {
+          data: Json
+          id: number
+          invoice_due: string
+          invoice_number: string
+          invoice_reference: string
+          invoice_total: number
+          kind: string
+          organization: string
+          recipients: Json
+          tenant_id: string
+        }[]
+      }
+      plan_price: {
+        Args: { p_plan: string; p_quantity: number }
+        Returns: {
+          discount: number
+          subtotal: number
+          tax: number
+          total: number
+          unit_price: number
+        }[]
+      }
+      platform_approve_payment: {
+        Args: { p_invoice: string; p_method: string; p_reference?: string }
+        Returns: undefined
+      }
+      platform_customers: {
+        Args: never
+        Returns: {
+          cancel_at: string
+          current_period_end: string
+          open_total: number
+          organization: string
+          owner_email: string
+          plan: string
+          properties: number
+          quantity: number
+          status: Database["public"]["Enums"]["subscription_status"]
+          tenant_id: string
+          trial_ends_at: string
+        }[]
+      }
+      platform_overview: { Args: never; Returns: Json }
+      platform_reject_proof: {
+        Args: { p_invoice: string; p_reason: string }
+        Returns: undefined
+      }
+      platform_set_suspended: {
+        Args: { p_suspended: boolean; p_tenant: string }
+        Returns: undefined
+      }
+      platform_update_plan: {
+        Args: {
+          p_active: boolean
+          p_code: string
+          p_max_properties: number
+          p_unit_price: number
+        }
+        Returns: undefined
+      }
+      platform_update_settings: { Args: { p: Json }; Returns: undefined }
+      properties_in_use: { Args: { p_tenant: string }; Returns: number }
+      property_limit: { Args: { p_tenant: string }; Returns: number }
       reminder_kind: { Args: { p_days: number }; Returns: string }
       remove_member: {
         Args: { p_tenant: string; p_user: string }
@@ -799,9 +1269,29 @@ export type Database = {
         Args: { r: Database["public"]["Enums"]["member_role"] }
         Returns: number
       }
+      submit_payment_proof: {
+        Args: {
+          p_file_name: string
+          p_invoice: string
+          p_mime: string
+          p_note?: string
+          p_path: string
+          p_size: number
+        }
+        Returns: string
+      }
+      tenant_writable: { Args: { p_tenant: string }; Returns: boolean }
     }
     Enums: {
       member_role: "owner" | "admin" | "operator" | "viewer"
+      subscription_status:
+        | "trialing"
+        | "pending_payment"
+        | "proof_received"
+        | "active"
+        | "past_due"
+        | "suspended"
+        | "canceled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -930,6 +1420,15 @@ export const Constants = {
   public: {
     Enums: {
       member_role: ["owner", "admin", "operator", "viewer"],
+      subscription_status: [
+        "trialing",
+        "pending_payment",
+        "proof_received",
+        "active",
+        "past_due",
+        "suspended",
+        "canceled",
+      ],
     },
   },
 } as const
