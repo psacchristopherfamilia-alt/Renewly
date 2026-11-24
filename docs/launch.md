@@ -14,8 +14,10 @@ Migraciones: siempre primero en staging (`supabase link --project-ref <ref> && s
 
 **Hoy (24 nov 2026) en Render, plan gratuito**, rama `claude/renewly-saas-tci-6jl9x2` con despliegue automático:
 
-- App: https://renewly-app-5ego.onrender.com (servicio `renewly-app`, build `cd app && npm ci && npm run build`)
-- Venta: https://renewly-landing.onrender.com (servicio `renewly-landing`)
+- App: https://app.renewly.saasifytci.com → `renewly-app-5ego.onrender.com` (servicio `renewly-app`, build `cd app && npm ci && npm run build`)
+- Venta: https://renewly.saasifytci.com → `renewly-landing.onrender.com` (servicio `renewly-landing`)
+- DNS: CNAME `renewly` y `app.renewly` en `saasifytci.com` (Vercel DNS). Cada dominio debe estar agregado en Render → servicio → Settings → Custom Domains.
+- Correo: `Renewly <renewly@saasifytci.com>` (dominio ya verificado en Resend).
 - El plan gratuito se duerme tras 15 min sin visitas (primera carga ~50 s) y **no corre los crons de `vercel.json`**: antes del piloto, pasar a Starter o llamar `/api/cron/billing` y `/api/cron/reminders` desde un programador externo con `Authorization: Bearer <CRON_SECRET>`.
 
 ### Alternativa: Vercel
