@@ -10,7 +10,15 @@
 
 Migraciones: siempre primero en staging (`supabase link --project-ref <ref> && supabase db push`), luego producción. En producción hoy se aplicaron pegando `supabase/setup/phaseN.sql`; las siguientes ya pueden ir con `supabase db push`.
 
-## 2. Despliegue (Vercel)
+## 2. Despliegue
+
+**Hoy (24 nov 2026) en Render, plan gratuito**, rama `claude/renewly-saas-tci-6jl9x2` con despliegue automático:
+
+- App: https://renewly-app-5ego.onrender.com (servicio `renewly-app`, build `cd app && npm ci && npm run build`)
+- Venta: https://renewly-landing.onrender.com (servicio `renewly-landing`)
+- El plan gratuito se duerme tras 15 min sin visitas (primera carga ~50 s) y **no corre los crons de `vercel.json`**: antes del piloto, pasar a Starter o llamar `/api/cron/billing` y `/api/cron/reminders` desde un programador externo con `Authorization: Bearer <CRON_SECRET>`.
+
+### Alternativa: Vercel
 
 Dos proyectos de Vercel apuntando a este repositorio:
 
